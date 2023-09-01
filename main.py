@@ -1,6 +1,7 @@
 from flask import Flask, render_template_string
 import folium
 import pandas as pd
+from database import Database
 
 app = Flask(__name__)
 
@@ -25,7 +26,7 @@ def iframe():
     """Embed a map as an iframe on a page."""
 
     # set the iframe width and height
-    m.get_root().width = "800px"
+    m.get_root().width = "1600px"
     m.get_root().height = "600px"
     iframe = m.get_root()._repr_html_()
 
