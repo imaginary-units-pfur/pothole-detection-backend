@@ -1,6 +1,3 @@
-use actix_web::{get, Responder};
-
-#[get("/")]
-pub(crate) async fn index() -> impl Responder {
-    "Hello world"
+pub(crate) async fn root() -> &'static str {
+    "Hewwo wowd"
 }

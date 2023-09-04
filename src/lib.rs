@@ -1,15 +1,11 @@
-use std::net::Ipv4Addr;
-
-use actix_web::{middleware::Logger, services, App, HttpServer};
+use axum::{routing::get, Router};
 mod routes;
 
-pub async fn run(ip: Ipv4Addr, port: u16) -> std::io::Result<()> {
-    HttpServer::new(|| {
-        App::new()
-            .wrap(Logger::default())
-            .service(services![routes::index])
-    })
-    .bind((ip, port))?
-    .run()
-    .await
+pub async fn run(db_url: &str) {
+    let _client = redis::Client::open(db_url).unwrap();
+    let app = Router::new().route("/", get(routes::root));
+    axum::Server::bind(&"0.0.0.0:80".parse().unwrap())
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
 }
