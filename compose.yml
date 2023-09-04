@@ -1,0 +1,18 @@
+services:
+  backend:
+    build: .
+    environment:
+      - REDIS_URL=redis://redis_database
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    volumes:
+      - ./timetables.db:/app/timetables.db
+      - ./backend.log:/app/backend.log
+
+  redis:
+    image: redis:latest
+    volumes:
+      - ./data:/data
+    ports:
+      - 6379:6379
