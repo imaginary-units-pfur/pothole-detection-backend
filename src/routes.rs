@@ -1,5 +1,5 @@
 use axum::response::IntoResponse;
 
-pub(crate) async fn root() -> impl IntoResponse {
+pub async fn root() -> impl IntoResponse {
     "Hewwo wowd"
 }
