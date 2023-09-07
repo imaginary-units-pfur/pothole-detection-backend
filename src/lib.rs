@@ -1,17 +1,20 @@
 use axum::{routing::get, Router};
-mod routes;
 use tower_http::trace::TraceLayer;
+
+mod database;
+mod routes;
 
 #[derive(Clone)]
 struct ServerCtx {
-    db_client: redis::Client,
+    db: database::Database,
 }
 
 pub async fn run(db_url: &str) {
     tracing_subscriber::fmt::init();
 
-    let client = redis::Client::open(db_url).unwrap();
-    let ctx = ServerCtx { db_client: client };
+    let db = database::Database::new();
+    let ctx = ServerCtx { db };
+
     let app = Router::new()
         .route("/", get(routes::root))
         .with_state(ctx)
