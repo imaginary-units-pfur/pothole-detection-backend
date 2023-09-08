@@ -1,4 +1,5 @@
 use axum::{routing::get, Router};
+use rstar::RTree;
 use tower_http::trace::TraceLayer;
 
 mod database;
@@ -8,12 +9,14 @@ mod routes;
 #[derive(Clone)]
 pub struct ServerCtx {
     db: database::Database,
+    tree: RTree<models::RoadDamage>,
 }
 
 impl ServerCtx {
     pub async fn new() -> Self {
         let db = database::Database::new().await;
-        Self { db }
+        let tree = RTree::bulk_load(db.get_all_records().await);
+        Self { db, tree }
     }
 }
 

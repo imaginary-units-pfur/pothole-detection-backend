@@ -1,4 +1,9 @@
 db.sqlite
+db.sqlite-shm
+db.sqlite-wal
+
+load_dev_data.py
+
 images/
 data/
 
