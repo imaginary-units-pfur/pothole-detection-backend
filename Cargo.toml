@@ -1,20 +1,8 @@
-[package]
-name = "pothole-detection-backend"
-version = "0.1.0"
-edition = "2021"
+[workspace]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+members = [
+    "server",
+    "common_data",
+    "frontend_requests",
+]
 
-[dependencies]
-axum = { version = "0.6.20", features = ["tracing", "query"] }
-bitflags = "2.4.0"
-dotenvy = "0.15.7"
-reqwest = { version = "0.11.20", features = ["rustls-tls-webpki-roots"], default-features = false }
-rstar = "0.11.0"
-serde = "1.0.188"
-serde_json = "1.0.105"
-sqlx = { version = "0.7.1", features = ["sqlite", "runtime-tokio"] }
-tokio = { version = "1.32.0", features = ["full"] }
-tower-http = { version = "0.4.0", features = ["trace"] }
-tracing = "0.1.37"
-tracing-subscriber = { version = "0.3", features = ["env-filter", "registry"] }

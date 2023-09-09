@@ -1,8 +1,8 @@
-use std::path::PathBuf;
-
 use bitflags::bitflags;
 use rstar::{RTreeObject, AABB};
 use serde::{Serialize, Serializer};
+use std::path::PathBuf;
+
 bitflags! {
     #[derive(Debug, Clone, Copy)]
     pub struct DamageType: u8 {

@@ -1,11 +1,8 @@
 services:
-  backend:
+  server:
     build: .
     env_file:
       - .env
     ports:
       - "8080:8080"
     restart: unless-stopped
-    volumes:
-      - ./timetables.db:/app/timetables.db
-      - ./backend.log:/app/backend.log

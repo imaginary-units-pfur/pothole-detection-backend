@@ -5,10 +5,9 @@ use axum::{
     response::IntoResponse,
 };
 use rstar::AABB;
-use tracing::{info, warn};
 
-use crate::models::DamageType;
 use crate::ServerCtx;
+use common_data::DamageType;
 
 pub async fn root() -> impl IntoResponse {
     "Hewwo wowd"
@@ -18,7 +17,6 @@ pub async fn get_points_in_rect(
     State(ctx): State<Arc<ServerCtx>>,
     Query(params): Query<HashMap<String, String>>,
 ) -> impl IntoResponse {
-    warn!("hi");
     let p1 = [
         params["x1"].parse::<f64>().unwrap(),
         params["y1"].parse::<f64>().unwrap(),

@@ -1,3 +1,4 @@
+use common_data::*;
 use std::sync::Arc;
 
 use axum::{routing::get, Router};
@@ -5,13 +6,12 @@ use rstar::RTree;
 use tower_http::trace::TraceLayer;
 
 mod database;
-mod models;
 mod routes;
 
 #[derive(Clone)]
 pub struct ServerCtx {
     db: database::Database,
-    tree: RTree<models::RoadDamage>,
+    tree: RTree<RoadDamage>,
 }
 
 impl ServerCtx {

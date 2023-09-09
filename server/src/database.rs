@@ -2,7 +2,7 @@ use dotenvy::dotenv;
 use sqlx::sqlite::SqlitePool;
 use std::env;
 
-use crate::models::RoadDamage;
+use common_data::RoadDamage;
 
 #[derive(Clone)]
 pub struct Database {
