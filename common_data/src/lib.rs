@@ -1,7 +1,7 @@
 use bitflags::bitflags;
 use rstar::{RTreeObject, AABB};
-use serde::{Serialize, Serializer};
-use std::path::PathBuf;
+use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
+use std::{fmt, path::PathBuf};
 
 bitflags! {
     #[derive(Debug, Clone, Copy)]
@@ -25,9 +25,10 @@ impl From<DamageType> for bool {
     }
 }
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RoadDamage {
     #[serde(serialize_with = "serialize_damage_type")]
+    #[serde(deserialize_with = "deserialize_damage_type")]
     pub damage_type: DamageType,
     pub file_path: PathBuf,
     pub latitude: f64,
@@ -39,6 +40,32 @@ where
     S: Serializer,
 {
     s.serialize_u8(value.bits())
+}
+
+fn deserialize_damage_type<'de, D>(deserializer: D) -> Result<DamageType, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    struct Visitor;
+
+    impl<'de> de::Visitor<'de> for Visitor {
+        type Value = DamageType;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("a string containing json data")
+        }
+
+        fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            // unfortunately we lose some typed information
+            // from errors deserializing the json string
+            let v: u8 = serde_json::from_str(v).map_err(E::custom)?;
+            Ok(DamageType::from_bits(v).unwrap_or(DamageType::Other))
+        }
+    }
+    deserializer.deserialize_u8(Visitor)
 }
 
 impl RTreeObject for RoadDamage {
