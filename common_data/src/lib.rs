@@ -4,7 +4,7 @@ use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 use std::{fmt, path::PathBuf};
 
 bitflags! {
-    #[derive(Debug, Clone, Copy, PartialEq)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub struct DamageType: u8 {
         const Pothole = 1 << 0;
         const Crack = 1 << 1;
