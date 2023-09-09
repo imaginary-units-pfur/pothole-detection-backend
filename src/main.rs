@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use axum::{routing::get, Router};
 use rstar::RTree;
 use tower_http::trace::TraceLayer;
@@ -28,7 +30,8 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(routes::root))
-        .with_state(ctx)
+        .route("/points", get(routes::get_points_in_rect))
+        .with_state(Arc::new(ctx))
         .layer(TraceLayer::new_for_http());
 
     axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
