@@ -1,5 +1,6 @@
-use common_data::RoadDamage;
+use common_data::{RoadDamage, RoaddamageAdditionalInfo};
 
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub struct AABB {
     pub p1: (f64, f64),
     pub p2: (f64, f64),
@@ -16,4 +17,14 @@ pub async fn get_points_in_rect(
     .await?
     .json::<Vec<RoadDamage>>()
     .await?)
+}
+
+pub async fn get_info_by_id(
+    server_address: &str,
+    id: i64,
+) -> anyhow::Result<RoaddamageAdditionalInfo> {
+    Ok(reqwest::get(format!("{server_address}/info/{id}"))
+        .await?
+        .json::<RoaddamageAdditionalInfo>()
+        .await?)
 }

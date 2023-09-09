@@ -2,7 +2,7 @@ use dotenvy::dotenv;
 use sqlx::sqlite::SqlitePool;
 use std::env;
 
-use common_data::RoadDamage;
+use common_data::{RoadDamage, RoaddamageAdditionalInfo};
 
 #[derive(Clone)]
 pub struct Database {
@@ -24,11 +24,26 @@ impl Database {
         sqlx::query_as!(
             RoadDamage,
             r#"
-        SELECT damage_type, file_path, latitude, longitude
+        SELECT id, damage_type, latitude, longitude
         FROM road_damage
         "#
         )
         .fetch_all(&self.pool)
+        .await
+        .unwrap()
+    }
+
+    pub async fn get_additional_info(&self, id: i64) -> RoaddamageAdditionalInfo {
+        sqlx::query_as!(
+            RoaddamageAdditionalInfo,
+            r#"
+        SELECT file_path
+        FROM road_damage
+        WHERE id = ?
+        "#,
+            id
+        )
+        .fetch_one(&self.pool)
         .await
         .unwrap()
     }

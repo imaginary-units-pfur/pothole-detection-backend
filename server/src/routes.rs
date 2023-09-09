@@ -1,7 +1,7 @@
 use std::{collections::HashMap, sync::Arc};
 
 use axum::{
-    extract::{Query, State},
+    extract::{Path, Query, State},
     response::IntoResponse,
 };
 use rstar::AABB;
@@ -34,4 +34,11 @@ pub async fn get_points_in_rect(
             .collect::<Vec<_>>(),
     )
     .unwrap()
+}
+
+pub async fn get_additional_info_for_point(
+    State(ctx): State<Arc<ServerCtx>>,
+    Path(id): Path<i64>,
+) -> impl IntoResponse {
+    serde_json::to_string(&ctx.db.get_additional_info(id).await).unwrap()
 }

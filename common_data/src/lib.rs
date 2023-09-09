@@ -4,7 +4,7 @@ use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 use std::{fmt, path::PathBuf};
 
 bitflags! {
-    #[derive(Debug, Clone, Copy)]
+    #[derive(Debug, Clone, Copy, PartialEq)]
     pub struct DamageType: u8 {
         const Pothole = 1 << 0;
         const Crack = 1 << 1;
@@ -25,14 +25,19 @@ impl From<DamageType> for bool {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RoadDamage {
+    pub id: i64,
     #[serde(serialize_with = "serialize_damage_type")]
     #[serde(deserialize_with = "deserialize_damage_type")]
     pub damage_type: DamageType,
-    pub file_path: PathBuf,
     pub latitude: f64,
     pub longitude: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct RoaddamageAdditionalInfo {
+    pub file_path: PathBuf,
 }
 
 fn serialize_damage_type<S>(value: &DamageType, s: S) -> Result<S::Ok, S::Error>

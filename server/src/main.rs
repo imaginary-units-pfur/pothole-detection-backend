@@ -31,6 +31,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(routes::root))
         .route("/points", get(routes::get_points_in_rect))
+        .route("info/:id", get(routes::get_additional_info_for_point))
         .with_state(Arc::new(ctx))
         .layer(TraceLayer::new_for_http());
 
