@@ -13,15 +13,15 @@ impl Database {
     pub async fn new() -> Self {
         let _ = dotenv();
         let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-        let pool = SqlitePool::connect(&database_url)
-            .await
-            .expect("Could not connect to the database at {database_url}");
+        let pool = SqlitePool::connect(&database_url).await.expect(&format!(
+            "Could not connect to the database at {database_url}"
+        ));
         sqlx::migrate!().run(&pool).await.unwrap();
         Self { pool }
     }
 
-    pub async fn get_all_records(&self) -> Vec<RoadDamage> {
-        sqlx::query_as!(
+    pub async fn get_all_records(&self) -> sqlx::Result<Vec<RoadDamage>> {
+        Ok(sqlx::query_as!(
             RoadDamage,
             r#"
         SELECT id, damage_type, latitude, longitude
@@ -29,12 +29,14 @@ impl Database {
         "#
         )
         .fetch_all(&self.pool)
-        .await
-        .unwrap()
+        .await?)
     }
 
-    pub async fn get_additional_info(&self, id: i64) -> RoaddamageAdditionalInfo {
-        sqlx::query_as!(
+    pub async fn get_additional_info(
+        &self,
+        id: i64,
+    ) -> sqlx::Result<Option<RoaddamageAdditionalInfo>> {
+        Ok(sqlx::query_as!(
             RoaddamageAdditionalInfo,
             r#"
         SELECT file_path
@@ -43,8 +45,7 @@ impl Database {
         "#,
             id
         )
-        .fetch_one(&self.pool)
-        .await
-        .unwrap()
+        .fetch_optional(&self.pool)
+        .await?)
     }
 }

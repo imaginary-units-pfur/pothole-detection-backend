@@ -11,7 +11,7 @@ pub async fn get_points_in_rect(
     rect: AABB,
 ) -> anyhow::Result<Vec<RoadDamage>> {
     Ok(reqwest::get(format!(
-        "{server_address}/points?x1={}&y1={}&x2={}&y2={}",
+        "{server_address}/points/by-coords/from/{}/{}/to/{}/{}",
         rect.p1.0, rect.p1.1, rect.p2.0, rect.p2.1
     ))
     .await?
@@ -23,7 +23,7 @@ pub async fn get_info_by_id(
     server_address: &str,
     id: i64,
 ) -> anyhow::Result<RoaddamageAdditionalInfo> {
-    Ok(reqwest::get(format!("{server_address}/info/{id}"))
+    Ok(reqwest::get(format!("{server_address}/points/by-id/{id}"))
         .await?
         .json::<RoaddamageAdditionalInfo>()
         .await?)

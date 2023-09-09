@@ -17,7 +17,11 @@ pub struct ServerCtx {
 impl ServerCtx {
     pub async fn new() -> Self {
         let db = database::Database::new().await;
-        let tree = RTree::bulk_load(db.get_all_records().await);
+        let tree = RTree::bulk_load(
+            db.get_all_records()
+                .await
+                .expect("Failed to load all points for bulk-loading"),
+        );
         Self { db, tree }
     }
 }
@@ -30,8 +34,14 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(routes::root))
-        .route("/points", get(routes::get_points_in_rect))
-        .route("info/:id", get(routes::get_additional_info_for_point))
+        .route(
+            "/points/by-coords/from/:x1/:y1/to/:x2/:y2",
+            get(routes::get_points_in_rect),
+        )
+        .route(
+            "/points/by-id/:id",
+            get(routes::get_additional_info_for_point),
+        )
         .with_state(Arc::new(ctx))
         .layer(TraceLayer::new_for_http());
 
