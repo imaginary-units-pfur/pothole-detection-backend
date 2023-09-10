@@ -1,6 +1,7 @@
 use common_data::{RoadDamage, RoaddamageAdditionalInfo};
 
 #[derive(Debug, PartialEq, Clone, Copy)]
+/// Points are in (longitude, latitude) format
 pub struct AABB {
     pub p1: (f64, f64),
     pub p2: (f64, f64),

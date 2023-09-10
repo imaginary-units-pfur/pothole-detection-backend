@@ -17,11 +17,11 @@ pub async fn root() -> impl IntoResponse {
 
 pub async fn get_points_in_rect(
     State(ctx): State<Arc<ServerCtx>>,
-    Path((x1, y1, x2, y2)): Path<(f64, f64, f64, f64)>,
+    Path((lon1, lat1, lon2, lat2)): Path<(f64, f64, f64, f64)>,
     Query(params): Query<HashMap<String, u8>>,
 ) -> Json<Vec<RoadDamage>> {
-    let p1 = [x1, y1];
-    let p2 = [x2, y2];
+    let p1 = [lon1, lat1];
+    let p2 = [lon2, lat2];
     let aabb = AABB::from_corners(p1, p2);
     let filter: Box<dyn Fn(&RoadDamage) -> bool> = match params.get("filter-damage-type") {
         Some(v) => {

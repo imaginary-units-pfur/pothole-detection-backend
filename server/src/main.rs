@@ -38,7 +38,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(routes::root))
         .route(
-            "/points/by-coords/from/:x1/:y1/to/:x2/:y2",
+            "/points/by-coords/from/:lon1/:lat1/to/:lon2/:lat2",
             get(routes::get_points_in_rect),
         )
         .route(
