@@ -93,7 +93,7 @@ impl Database {
             .choose(&mut rng)
             .unwrap()
             .bits();
-            query!("INSERT INTO road_damage (damage_type, file_path, longitude, latitude) VALUES (?,?,?,?);", damage_type, file_path, lat, lng)
+            query!("INSERT INTO road_damage (damage_type, file_path, longitude, latitude) VALUES (?,?,?,?);", damage_type, file_path, lng, lat)
                 .execute(&mut *tx)
                 .await?;
         }
