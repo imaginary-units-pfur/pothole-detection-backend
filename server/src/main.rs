@@ -17,6 +17,9 @@ pub struct ServerCtx {
 impl ServerCtx {
     pub async fn new() -> Self {
         let db = database::Database::new().await;
+        db.create_mock_data()
+            .await
+            .expect("Failed to create mock data"); // This is behind a feature flag, so it does not generate any data if that is turned off.
         let tree = RTree::bulk_load(
             db.get_all_records()
                 .await
@@ -43,7 +46,8 @@ async fn main() {
             get(routes::get_additional_info_for_point),
         )
         .with_state(Arc::new(ctx))
-        .layer(TraceLayer::new_for_http());
+        .layer(TraceLayer::new_for_http())
+        .layer(tower_http::cors::CorsLayer::very_permissive());
 
     axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
         .serve(app.into_make_service())

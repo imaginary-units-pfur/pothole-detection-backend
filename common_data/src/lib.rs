@@ -57,17 +57,16 @@ where
         type Value = DamageType;
 
         fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-            formatter.write_str("a string containing json data")
+            formatter.write_str("a number that is a bitmask of damage types")
         }
 
-        fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+        fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
         where
             E: de::Error,
         {
-            // unfortunately we lose some typed information
-            // from errors deserializing the json string
-            let v: u8 = serde_json::from_str(v).map_err(E::custom)?;
-            Ok(DamageType::from_bits(v).unwrap_or(DamageType::Other))
+            // TODO: return an error indicating that a value is not correct
+            // (how does serde::de::Error work???)
+            Ok(DamageType::from_bits_truncate(v as u8))
         }
     }
     deserializer.deserialize_u8(Visitor)
