@@ -1,7 +1,7 @@
 use common_data::*;
 use std::sync::Arc;
 
-use axum::{routing::get, Router};
+use axum::{routing::{get, post}, Router};
 use rstar::RTree;
 use tower_http::trace::TraceLayer;
 
@@ -45,6 +45,7 @@ async fn main() {
             "/points/by-id/:id",
             get(routes::get_additional_info_for_point),
         )
+        .route("/analyze", post(routes::analysis::analyze_ros_message))
         .with_state(Arc::new(ctx))
         .layer(TraceLayer::new_for_http())
         .layer(tower_http::cors::CorsLayer::very_permissive());

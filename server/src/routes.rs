@@ -1,3 +1,5 @@
+pub mod analysis;
+
 use std::{collections::HashMap, sync::Arc};
 
 use axum::{
