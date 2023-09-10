@@ -22,7 +22,7 @@ pub async fn get_points_in_rect(
 
 pub async fn get_info_by_id(
     server_address: &str,
-    id: i64,
+    id: u64,
 ) -> anyhow::Result<RoaddamageAdditionalInfo> {
     Ok(reqwest::get(format!("{server_address}/points/by-id/{id}"))
         .await?
