@@ -32,6 +32,20 @@ impl Database {
         .await?)
     }
 
+    pub async fn get_basic_info(&self, id: i64) -> sqlx::Result<Option<RoadDamage>> {
+        Ok(sqlx::query_as!(
+            RoadDamage,
+            r#"
+            SELECT id, damage_type, latitude, longitude
+            FROM road_damage
+        WHERE id = ?
+        "#,
+            id
+        )
+        .fetch_optional(&self.pool)
+        .await?)
+    }
+
     pub async fn get_additional_info(
         &self,
         id: i64,

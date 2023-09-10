@@ -3,12 +3,14 @@ pub mod analysis;
 use std::{collections::HashMap, sync::Arc};
 
 use axum::{
+    body::StreamBody,
     extract::{Path, Query, State},
-    http::StatusCode,
-    response::IntoResponse,
+    http::{HeaderMap, HeaderValue, StatusCode},
+    response::{IntoResponse, Response},
     Json,
 };
 use rstar::AABB;
+use tokio::io::AsyncReadExt;
 
 use crate::ServerCtx;
 use common_data::{DamageType, RoadDamage, RoaddamageAdditionalInfo};
@@ -49,5 +51,34 @@ pub async fn get_additional_info_for_point(
         Ok(Some(v)) => Ok(Json(v)),
         Ok(None) => Err(StatusCode::NOT_FOUND),
         Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
+}
+pub async fn fetch_image(State(ctx): State<Arc<ServerCtx>>, Path(id): Path<i64>) -> Response {
+    match ctx.db.get_basic_info(id).await {
+        Ok(None) => StatusCode::NOT_FOUND.into_response(),
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+        Ok(Some(v)) => {
+            let path = format!(
+                "{}/{}_{}.jpg",
+                std::env::var("IMAGE_DIR").unwrap(),
+                v.longitude,
+                v.latitude
+            );
+            let mut file = match tokio::fs::File::open(&path).await {
+                Ok(file) => file,
+                Err(err) => {
+                    return (StatusCode::NOT_FOUND, format!("File not found: {}", err))
+                        .into_response()
+                }
+            };
+
+            let mut data = vec![];
+            file.read_to_end(&mut data).await.unwrap();
+
+            let mut headers = HeaderMap::new();
+            headers.insert("Content-Type", HeaderValue::from_static("image/jpeg"));
+
+            (headers, data).into_response()
+        }
     }
 }
