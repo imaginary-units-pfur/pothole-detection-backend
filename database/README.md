@@ -1,0 +1,1 @@
+The folder `database-data` inside this directory is supposed to be mounted as a volume into MySQL.

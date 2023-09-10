@@ -13,7 +13,7 @@ services:
       - database
     networks:
       default:
-        ipv4_address: 10.69.69.1
+        ipv4_address: 10.69.69.3 # IP address 10.69.69.1 is reserved for the host!
 
   database:
     container_name: database
@@ -25,6 +25,8 @@ services:
       MYSQL_DATABASE: road_damage
       MYSQL_USER: server
       MYSQL_PASSWORD: server
+    volumes:
+      - ./database/database-data:/var/lib/mysql
     networks:
       default:
         ipv4_address: 10.69.69.2

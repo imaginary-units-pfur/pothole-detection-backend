@@ -13,8 +13,8 @@ bitflags! {
     }
 }
 
-impl From<i64> for DamageType {
-    fn from(value: i64) -> Self {
+impl From<u32> for DamageType {
+    fn from(value: u32) -> Self {
         Self::from_bits(value as u8).unwrap_or(Self::Other)
     }
 }
@@ -27,7 +27,7 @@ impl From<DamageType> for bool {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct RoadDamage {
-    pub id: i64,
+    pub id: u64,
     #[serde(serialize_with = "serialize_damage_type")]
     #[serde(deserialize_with = "deserialize_damage_type")]
     pub damage_type: DamageType,

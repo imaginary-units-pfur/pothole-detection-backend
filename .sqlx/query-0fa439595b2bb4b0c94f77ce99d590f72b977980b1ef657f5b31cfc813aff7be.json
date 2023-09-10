@@ -1,0 +1,25 @@
+{
+  "db_name": "MySQL",
+  "query": "\n        SELECT file_path\n        FROM road_damage\n        WHERE id = ?\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "file_path",
+        "type_info": {
+          "type": "Blob",
+          "flags": "NOT_NULL | BLOB | NO_DEFAULT_VALUE",
+          "char_set": 224,
+          "max_size": 262140
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "0fa439595b2bb4b0c94f77ce99d590f72b977980b1ef657f5b31cfc813aff7be"
+}
