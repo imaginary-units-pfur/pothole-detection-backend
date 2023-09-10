@@ -1,5 +1,5 @@
 use std::env;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::{io::Read, sync::Arc};
 
@@ -41,20 +41,24 @@ pub async fn analyze_ros_message(
     );
     let res = predict(pixels.as_slice(), &output_path).unwrap();
     if let Some(max) = res.iter().max_by(|x, y| x.1.total_cmp(&y.1)) {
-        let damage_type = res
-            .iter()
-            .fold(0u16, |acc, el| 0u16 | DamageType::from_str(&el.0).unwrap());
-        let id = ctx.db.insert_new(
-            damage_type,
-            Path::new(&output_path),
-            data.latitude,
-            data.longitude,
-            max.1,
-            &max.0,
-        );
-        ctx.tree.insert(common_data::RoadDamage {
-            id,
-            damage_type,
+        let damage_type = res.iter().fold(0u16, |acc, el| {
+            0u16 | DamageType::from_str(&el.0).unwrap().bits()
+        });
+        let id = ctx
+            .db
+            .insert_new(
+                damage_type,
+                PathBuf::from(&output_path),
+                data.latitude,
+                data.longitude,
+                max.1,
+                &max.0,
+            )
+            .await
+            .unwrap();
+        ctx.tree.lock().unwrap().insert(common_data::RoadDamage {
+            id: id as u64,
+            damage_type: (damage_type as u32).into(),
             latitude: data.latitude,
             longitude: data.longitude,
         });

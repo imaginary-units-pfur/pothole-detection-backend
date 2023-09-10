@@ -25,6 +25,9 @@ ADD frontend_requests ./frontend_requests
 ADD Cargo.toml ./
 # DO NOT copy .env for offline mode to work!
 
+RUN apt-get update
+RUN apt install -y libpython3.11
+RUN apt install -y libpython3.11-dev
 RUN cargo build --release --bin pothole-detection-server
 
 FROM debian:bookworm-slim AS runtime
@@ -34,6 +37,7 @@ RUN apt-get update
 RUN apt install -y ca-certificates
 #RUN apt search openssl && exit 1
 RUN apt install -y libssl3
+RUN apt install -y libpython3.11
 RUN rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

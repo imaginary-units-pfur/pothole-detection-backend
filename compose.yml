@@ -6,6 +6,10 @@ services:
     build: .
     env_file:
       - .env
+    environment:
+      IMAGE_DIR: /images
+    volumes:
+      - ./images:/images
     ports:
       - "8080:8080"
     restart: unless-stopped

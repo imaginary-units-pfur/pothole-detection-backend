@@ -1,0 +1,12 @@
+{
+  "db_name": "MySQL",
+  "query": "\n        INSERT INTO road_damage (damage_type, file_path, longitude, latitude, top_certainty, top_type)\n        VALUES (?, ?, ?, ?, ?, ?)\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 6
+    },
+    "nullable": []
+  },
+  "hash": "12eb2025e24ed54a47ec48db807a67246303876c9128e880eba0fa035d025b72"
+}

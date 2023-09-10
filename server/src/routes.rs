@@ -36,6 +36,8 @@ pub async fn get_points_in_rect(
 
     Json(
         ctx.tree
+            .lock()
+            .unwrap()
             .locate_in_envelope(&aabb)
             .filter(|el| (filter)(el))
             .map(|el| el.clone())
@@ -48,8 +50,7 @@ pub async fn get_additional_info_for_point(
     Path(id): Path<i64>,
 ) -> Result<Json<RoaddamageAdditionalInfo>, StatusCode> {
     match ctx.db.get_additional_info(id).await {
-        Ok(Some(v)) => Ok(Json(v)),
-        Ok(None) => Err(StatusCode::NOT_FOUND),
+        Ok(v) => Ok(Json(v)),
         Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
     }
 }

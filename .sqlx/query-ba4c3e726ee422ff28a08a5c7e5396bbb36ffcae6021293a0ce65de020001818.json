@@ -1,0 +1,47 @@
+{
+  "db_name": "MySQL",
+  "query": "\n        SELECT file_path, top_certainty, top_type\n        FROM road_damage\n        WHERE id = ?\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "file_path",
+        "type_info": {
+          "type": "Blob",
+          "flags": "NOT_NULL | BLOB | NO_DEFAULT_VALUE",
+          "char_set": 224,
+          "max_size": 262140
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "top_certainty",
+        "type_info": {
+          "type": "Double",
+          "flags": "",
+          "char_set": 63,
+          "max_size": 22
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "top_type",
+        "type_info": {
+          "type": "Blob",
+          "flags": "BLOB",
+          "char_set": 224,
+          "max_size": 262140
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "ba4c3e726ee422ff28a08a5c7e5396bbb36ffcae6021293a0ce65de020001818"
+}

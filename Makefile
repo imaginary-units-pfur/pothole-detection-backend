@@ -1,4 +1,4 @@
-docker: database-setup cargo-clean docker-build docker-run
+docker: database-setup docker-build docker-run
 
 # Database bullshit
 database-setup:

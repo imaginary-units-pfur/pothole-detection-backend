@@ -1,5 +1,5 @@
 use common_data::*;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use axum::{
     routing::{get, post},
@@ -15,7 +15,7 @@ mod routes;
 #[derive(Clone)]
 pub struct ServerCtx {
     db: database::Database,
-    tree: RTree<RoadDamage>,
+    tree: Arc<Mutex<RTree<RoadDamage>>>,
 }
 
 impl ServerCtx {
@@ -29,6 +29,7 @@ impl ServerCtx {
                 .await
                 .expect("Failed to load all points for bulk-loading"),
         );
+        let tree = Arc::new(Mutex::new(tree));
         Self { db, tree }
     }
 }
@@ -36,7 +37,7 @@ impl ServerCtx {
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-
+    pyo3::prepare_freethreaded_python();
     let ctx = ServerCtx::new().await;
 
     let app = Router::new()

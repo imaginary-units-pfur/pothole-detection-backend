@@ -1,6 +1,6 @@
 {
   "db_name": "MySQL",
-  "query": "SELECT * FROM road_damage LIMIT 1",
+  "query": "\n            SELECT id, damage_type, latitude, longitude\n            FROM road_damage\n        WHERE id = ?\n        ",
   "describe": {
     "columns": [
       {
@@ -25,16 +25,6 @@
       },
       {
         "ordinal": 2,
-        "name": "file_path",
-        "type_info": {
-          "type": "Blob",
-          "flags": "NOT_NULL | BLOB | NO_DEFAULT_VALUE",
-          "char_set": 224,
-          "max_size": 262140
-        }
-      },
-      {
-        "ordinal": 3,
         "name": "latitude",
         "type_info": {
           "type": "Double",
@@ -44,7 +34,7 @@
         }
       },
       {
-        "ordinal": 4,
+        "ordinal": 3,
         "name": "longitude",
         "type_info": {
           "type": "Double",
@@ -55,15 +45,14 @@
       }
     ],
     "parameters": {
-      "Right": 0
+      "Right": 1
     },
     "nullable": [
-      false,
       false,
       false,
       false,
       false
     ]
   },
-  "hash": "4fff4f823c05fdae2bb2f64167ee0d795bec27ff11850648b7e9fa3dc86a2753"
+  "hash": "3ec0cdf192af55e747bf6a7800291fd3838d06852e910b3b282769b79ba2e048"
 }
