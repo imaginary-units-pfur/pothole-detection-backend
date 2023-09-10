@@ -6,6 +6,7 @@ use rstar::RTree;
 use tower_http::trace::TraceLayer;
 
 mod database;
+mod detection;
 mod routes;
 
 #[derive(Clone)]
