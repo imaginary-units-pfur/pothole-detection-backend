@@ -1,19 +1,19 @@
 use dotenvy::dotenv;
-use sqlx::sqlite::SqlitePool;
+use sqlx::mysql::MySqlPool;
 use std::env;
 
 use common_data::{RoadDamage, RoaddamageAdditionalInfo};
 
 #[derive(Clone)]
 pub struct Database {
-    pool: SqlitePool,
+    pool: MySqlPool,
 }
 
 impl Database {
     pub async fn new() -> Self {
         let _ = dotenv();
         let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-        let pool = SqlitePool::connect(&database_url).await.expect(&format!(
+        let pool = MySqlPool::connect(&database_url).await.expect(&format!(
             "Could not connect to the database at {database_url}"
         ));
         sqlx::migrate!().run(&pool).await.unwrap();
