@@ -1,7 +1,5 @@
 from ultralytics import YOLO
-import numpy as np
 import cv2
-from csv import DictReader
 
 model = YOLO("best.pt")
 names_ru = {
@@ -27,7 +25,10 @@ names_eng = {
 model.names.update(names_ru)
 
 
-def predict(input_path, output_path):
-    pred = model.predict(input_path, iou=0.3, conf=0.1, imgsz=(640, 640), augment=True)
+def predict(input_arr, output_path):
+    pred = model.predict(input_arr, iou=0.3, conf=0.1, imgsz=(640, 640), augment=True)
+    pred_labels = [names_ru[x] for x in pred[0].boxes.cls.int().tolist()]
+    pred_boxes = pred[0].boxes.xyxy.int().tolist()
     result = cv2.cvtColor(pred[0].plot(), cv2.COLOR_BGR2RGB)
     cv2.imwrite(output_path, result)
+    return zip(pred_labels, pred_boxes)

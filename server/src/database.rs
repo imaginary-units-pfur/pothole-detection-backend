@@ -1,6 +1,6 @@
 use dotenvy::dotenv;
 use sqlx::mysql::MySqlPool;
-use std::env;
+use std::{env, path::Path};
 
 use common_data::{RoadDamage, RoaddamageAdditionalInfo};
 
@@ -53,7 +53,7 @@ impl Database {
         Ok(sqlx::query_as!(
             RoaddamageAdditionalInfo,
             r#"
-        SELECT file_path
+        SELECT file_path, top_certainty, top_type
         FROM road_damage
         WHERE id = ?
         "#,
@@ -61,6 +61,36 @@ impl Database {
         )
         .fetch_optional(&self.pool)
         .await?)
+    }
+
+    pub async fn insert_new(
+        &self,
+        damage_type: DamageType,
+        file_path: Path,
+        latitude: f64,
+        longitude: f64,
+        top_certainty: f64,
+        top_type: &str,
+    ) -> sqlx::Result<i64> {
+        let mut trans = self.pool.begin().await?;
+        sqlx::query!(
+            r#"
+        INSERT INTO road_damage (damage_type, file_path, longitude, latitude, top_certainty, top_type)
+        VALUES (?, ?, ?, ?, ?, ?)
+        RETURNING id
+        "#,
+            damage_type,
+            file_path,
+            longitude,
+            latitude,
+            top_certainty,
+            top_type
+        ).execute(trans).await;
+        let id = sqlx::query!("SELECT LAST_INSERT_ID();")
+            .fetch_one(&mut *trans)
+            .await?;
+        trans.commit().await?;
+        id
     }
 
     #[cfg(not(feature = "mock_data"))]

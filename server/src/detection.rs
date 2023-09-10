@@ -1,10 +1,13 @@
 use pyo3::prelude::*;
 
-fn predict(img_path: &str) -> PyResult<()> {
+pub fn predict(pixels: &[u8], output_path: &str) -> PyResult<Vec<(String, f64)>> {
     Python::with_gil(|py| {
         let code = include_str!("../detection.py");
         let detection = PyModule::from_code(py, code, "detection.py", "detection")?;
-        let _ = detection.getattr("predict")?.call1((img_path, img_path))?;
-        Ok(())
+        let res: Vec<(String, f64)> = detection
+            .getattr("predict")?
+            .call1((pixels, output_path))?
+            .extract()?;
+        Ok(res)
     })
 }

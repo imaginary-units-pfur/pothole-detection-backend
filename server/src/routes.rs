@@ -22,7 +22,7 @@ pub async fn root() -> impl IntoResponse {
 pub async fn get_points_in_rect(
     State(ctx): State<Arc<ServerCtx>>,
     Path((lon1, lat1, lon2, lat2)): Path<(f64, f64, f64, f64)>,
-    Query(params): Query<HashMap<String, u8>>,
+    Query(params): Query<HashMap<String, u16>>,
 ) -> Json<Vec<RoadDamage>> {
     let p1 = [lon1, lat1];
     let p2 = [lon2, lat2];
