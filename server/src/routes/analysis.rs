@@ -39,7 +39,7 @@ pub async fn analyze_ros_message(
         data.longitude,
         data.latitude
     );
-    let res = predict(pixels.as_slice(), &output_path).unwrap();
+    let res = predict(pixels.as_slice(), data.image_shape, &output_path).unwrap();
     if let Some(max) = res.iter().max_by(|x, y| x.1.total_cmp(&y.1)) {
         let damage_type = res.iter().fold(0u16, |acc, el| {
             0u16 | DamageType::from_str(&el.0).unwrap().bits()

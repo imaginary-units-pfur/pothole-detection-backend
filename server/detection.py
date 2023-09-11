@@ -25,10 +25,17 @@ names_eng = {
 model.names.update(names_ru)
 
 
-def predict(input_arr, output_path):
-    pred = model.predict(input_arr, iou=0.3, conf=0.1, imgsz=(640, 640), augment=True)
+from PIL import Image
+import io
+import numpy as np
+def predict(input_arr, shape, output_path):
+    img = np.array(list(input_arr)).reshape([-1, shape[0], 3]).astype(np.uint8)
+    img = Image.fromarray(img).convert('RGB')
+
+    pred = model.predict(img, iou=0.3, conf=0.1, imgsz=(640, 640), augment=True)
     pred_labels = [names_ru[x] for x in pred[0].boxes.cls.int().tolist()]
     pred_boxes = pred[0].boxes.xyxy.int().tolist()
+    pred_confs = pred[0].boxes.conf.tolist()
     result = cv2.cvtColor(pred[0].plot(), cv2.COLOR_BGR2RGB)
     cv2.imwrite(output_path, result)
-    return zip(pred_labels, pred_boxes)
+    return list(zip(pred_labels, pred_confs))
